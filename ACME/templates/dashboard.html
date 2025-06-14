@@ -1,0 +1,275 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+<!-- Dashboard page title. -->
+<div class="m-3" id="title">
+    <h2>Your Dashboard</h2>
+</div>
+
+<!-- Buisness overview cards. -->
+<section class="m-3">
+    <div class="row row-cols-sm-3 row-colls-md-3 g-3">
+
+        <!-- Card 1 -->
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Display total customers in database. -->
+                    <h5 class="card-title">Total Customers</h5>
+                    <div class="d-flex justify-content-center align-items-center" style="height: 40px;">
+                        <span class="fs-4">{{ totalCustomers }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Display total gross profit. -->
+                    <h5 class="card-title">Total Gross Profit</h5>
+                    <div class="d-flex justify-content-center align-items-center" style="height: 40px;">
+                        <span class="fs-4">£{{ totalProfit }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Display outstanding tasks. -->
+                    <h5 class="card-title">Outstanding Tasks</h5>
+                    <div class="d-flex justify-content-center align-items-center" style="height: 40px;">
+                        <span class="fs-4">{{ tasks }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Table of current customers. -->
+<section class="m-3">
+    <h4>Current Customers</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Company</th>
+                <th>Affiliate</th>
+                <th>Package</th>
+                <th>days</th>
+                <th>Total Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.company }}</td>
+                    <td>{{ customer.affiliate }}</td>
+                    <td>{{ customer.package }}</td>
+                    <td>{{ customer.days }}</td>
+                    <td>£{{ customer.value }}.00</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<br>
+
+<!-- Edit site -->
+<section class="m-3" id="edit">
+    <div class="mt-3">
+        <h4>Edit Website</h4>
+
+        <!-- Note from IT -->
+        <p class="text-muted fs-6">Note From IT - Please remember to use the keyword "Default" after promotion has ended, NOT "Deface". Thank you.</p>
+
+        <!-- Keyword input for editing site -->
+        <form action="/edit" method="post">
+
+            <!-- Error message space -->
+            <p class="text-danger">{{ message }}</p>
+            <div class="input-group mb-3">
+                <input class="form-control" name="keyword" type="text" placeholder="Keyword" aria-label="Keyword" autocomplete="off" style="max-width: 300px;">
+
+                <!-- Submit keyword -->
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary ms-2" type="submit">Update Website</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<br>
+
+<!-- Submit customer to database and table. -->
+<section class="m-3" id="addCustomer">
+    <h4>Add Customers</h4>
+    <p class="text-danger">{{ form_message }}</p>
+    <!-- Customer details -->
+    <form action="/addCustomer" method="post">
+        <div class="row mt-3">
+            <div class="col">
+                <!-- Company name. -->
+                <input class="form-control" type="text" name="company" placeholder="Company" autocomplete="off" aria-label="Company" style="max-width: 450px;">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <!-- Affiliates first name. -->
+                <input class="form-control" type="text" name="firstName" placeholder="Affiliates First Name" autocomplete="off">
+            </div>
+            <div class="col">
+                <!-- Affiliates last name. -->
+                <input class="form-control" type="text" name="secondName" placeholder="Affiliates Last Name" autocomplete="off">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col">
+                <!-- Total length of contract. -->
+                <input class="form-control" type="number" name="days" placeholder="Number of days" autocomplete="off">
+            </div>
+            <div class="col">
+                <!-- Packages available -->
+                <select class="form-select text-muted" name="package">
+                    <option selected>Package Type...</option>
+                    <option value="Bronse">Bronze: £50 per day</option>
+                    <option value="Silver">Silver: £200 per day</option>
+                    <option value="Gold">Gold: £500 per day</option>
+                    <option value="Platinum">Platinum: £1,000 per day</option>
+                </select>
+            </div>
+        </div>
+        <!-- Submit Customer -->
+        <button class="btn btn-primary mt-3" type="submit">Submit Customer</button>
+    </form>
+</section>
+<br>
+
+<!-- Mission 2 complete modal. -->
+<div class="modal fade" id="missionCompleteModal" tabindex="-1" aria-labelledby="missionCompleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal header -->
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-ui-checks"></i> Mission 2 Complete!</h5>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p style="margin-bottom: 0.75em"><strong>Mission Complete:</strong> <i class="bi bi-safe"></i> - Break into the admin account.</li></p>
+                <p>
+                    Now that was impressive! Congratulations on cracking the SQL injection!
+                    Unfortunately, this vulnerability is still seen on many modern sites today. It's
+                    important you understand how to protect your site and data against hackers by understanding
+                    how it works.
+                </p>
+                <p>This vulnerability takes advantage of how the SQL query for checking usernames and passwords is written.</p>
+                <p style="margin-bottom: 0em;">Here is the <strong>Incorrect</strong> method:</p>
+
+                <!-- Incorrect SQL query -->
+                <img alt="Incorrect SQL query" src="static/bad-sql.jpg" class="rounded img-fluid" style="margin-bottom: 1em;">
+                <br>
+                <p>The error here is using '%s' as placeholders, because if you input ' OR '1'='1 then the input is overridden with the apostrophes (').</p>
+                <p style="margin-bottom: 0em;">Here is the <strong>correct</strong> method:</p>
+                
+                <!-- Correct SQL query -->
+                <img alt="Correct SQL query" src="static/good-sql.jpg" class="rounded img-fluid" style="margin-bottom: 1em;">
+                <p>Here you can see we use (?) as placeholders, removing the need to have apostrophes pre-written! Preventing the SQL injection.</p>
+                <p>Time for the third challenge, defacing the site! You need to teach this insecure site a lesson! Don't actually do this in real life! If you find a vulnerability, make sure you report it to the right people.</p>
+                <p style="margin-bottom: 0em;">Good Luck!</p>
+            </div>
+
+            <!-- Close modal -->
+            <div class="modal-footer justify-content-between">
+                <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- JavaScript -->
+{% block script %}
+<script>
+    // Popovers
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+    // call "challengeTwo" to see if user has already completed the challenge.
+    document.addEventListener("DOMContentLoaded", async () => {
+        const response = await fetch("/challengeTwo");
+        const result = await response.json();
+
+        // If the return message is true, display Mission Complete modal.
+        if (result.showMessage === true) {
+            const modal = new bootstrap.Modal(document.getElementById("missionCompleteModal"));
+            modal.show();
+        }
+    });
+
+    // Listen for user to click on "Mission Control".
+    document.getElementById("missionControlButton").addEventListener("click", async () => {
+        const response = await fetch("/missionControl");
+        const data = await response.json();
+
+        // Get data for Mission Control.
+        document.getElementById("timesCaught").textContent = `Times Caught: ${data.timesCaught}`;
+        document.getElementById("challenge").textContent = `${data.question}`;
+        document.getElementById("completeMissions").textContent = `Missions Completed: ${data.totalComplete}`;
+
+        // Display Hint.
+        document.getElementById("hint").addEventListener("click", () => {
+            document.getElementById("help").textContent = `${data.hint}`;
+        });
+
+        // Display Answer.
+        document.getElementById("revealAnswer").addEventListener("click", () => {
+            document.getElementById("help").textContent = `${data.answer}`;
+        });
+
+        // Reset users data and site.
+        document.getElementById("reset").addEventListener("click", async () => {
+            const response = await fetch("/reset", { method: "POST" });
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = "/";
+            }
+        });
+
+        // Display Mission Control.
+        const modal = new bootstrap.Modal(document.getElementById("missionControl"));
+            modal.show();
+    });
+</script>
+{% endblock %}
+
+{% block footer %}
+<section class="continer text-center text-dark pt-3 ms-4">
+    <h5><i class="bi bi-body-text"></i> ACME</h5>
+    <p style="font-size: 0.8rem;">Empowering businesses through intelligent automation and scalable solutions.</p>
+    <!-- Footer links. -->
+    <ul class="list-unstyled">
+        <li><a class="text-dark" href="/">Website</a></li>
+        <li><a class="text-dark" hred="/dashboard">Dashboard</a></li>
+        <li><a class="text-dark" href="/#edit">Edit Website</a></li>
+        <li><a class="text-dark" href="/#addCustomer">Add Customer</a></li>
+        <li><a class="text-dark" href="/logout">Logout</a></li>
+    </ul>
+
+    <!-- Copyright. -->
+    <div class="text-center mt-4">
+        <p style="font-size: 0.8rem;">&#169 <strong>ACME</strong> Solutions. All rights reserved.</p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+    <!-- Login -->
+    <div class="loginContainer text-center">
+        <h3 class="mb-3">Login</h3>
+        <!-- Login error message. -->
+        <p class="text-danger" id="errorMessage">{{ errorMessage }}</p>
+
+        <!-- Login form -->
+        <form action="/login" method="post">
+
+            <!-- Username input -->
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" autocomplete="off" autofocus name="username" placeholder="Username" type="text">
+            </div>
+
+            <!-- Password input -->
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" autocomplete="off" autofocus name="password" placeholder="Password" type="password">
+            </div>
+
+            <!-- Login button -->
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Login</button>
+            </div>
+
+            <!-- Forgotten password. Popover message on hover. Give user caught point when clikced. -->
+            <a href="#" class="d-inline-block" id="forgottenPassword" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="bottom" data-bs-content="Reseting the password is Risky! 2FA could notify security...">Forgotten Password</a>
+        </form>
+
+        <!-- Sticky note hint. -->
+        <div class="sticky_note">
+            <!-- Popover on hover. -->
+            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="The username is Admin... but the password’s covered. You need to inject yourself in somehow...">
+                <!-- Sticky note -->
+                <img alt="Sticky note with (username: Admin) but the password is covered by a mug stain and unreadable." id="note" src="/static/sticky.webp" class="img-fluid sticky-note-image">
+            </span>
+        </div>
+    </div>
+
+    <!-- Caught alert message. -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <div class="toast" id="caughtToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <!-- Alert Toast header. -->
+                <strong class="me-auto">You Got Caught!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <!-- Alert Toast body. -->
+            <div class="toast-body">
+                <p>You alerted security that the admin was trying to reset their password. This leaves evidence you were here!</p>
+                <!-- Display total times caught. -->
+                Total Times Caught: <span id="caughtCount"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission 1 complete modal. -->
+    <div class="modal fade" id="missionCompleteModal" tabindex="-1" aria-labelledby="missionCompleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal header -->
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-ui-checks"></i> Mission 1 Complete!</h5>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p style="margin-bottom: 0.75em"><strong>Mission Complete:</strong> <i class="bi bi-search"></i> - Find the hidden employee login page.</li></p>
+                    <p style="margin-bottom: 0.60em">
+                        I know what you are thinking...
+                        That wasn't really much of a hack, was it? Well, you are not wrong. You will, however, be surprised just how vulnerable your site
+                        can be if you leave links lying around and you don't lock down your directories!
+                    </p>
+                    <p style="margin-bottom: 0.60em;"><strong>Remember:</strong> If you don't want it found, don't leave it lying around!</p>
+                    <p style="margin-bottom: 0.60em;">Now, move on to the second challenge. This time, try hacking into the admin account.</p>
+                    <p style="margin-bottom: 0em;">Good luck!</p>
+                </div>
+
+                <!-- Close modal button. -->
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- JavaScript for modals, popovers, and forgotten password. -->
+{% block script %}
+<script>
+    // Popovers.
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+    // Call to "/challengeOne" to check if the user has already completed the challenge.
+    document.addEventListener("DOMContentLoaded", async () => {
+        const response = await fetch("/challengeOne");
+        const result = await response.json();
+
+        // If the return is to show message, display congratulation modal.
+        if (result.showMessage === true) {
+            const modal = new bootstrap.Modal(document.getElementById("missionCompleteModal"));
+            modal.show();
+        }
+    });
+
+    // If the user clicks on forgotten password, add 1 to the users caught count.
+    document.getElementById("forgottenPassword").addEventListener("click", async () => {
+        const response = await fetch("/caught");
+        const data = await response.json();
+
+        // Get the users caught count to display on the caught toast.
+        document.getElementById("caughtCount").textContent = `${data.caughtCount}`;
+
+        // Display the caught toast.
+        const toastEl = document.getElementById("caughtToast");
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show()
+    });
+
+    // Listen for user to click on "Mission Control".
+    document.getElementById("missionControlButton").addEventListener("click", async () => {
+        const response = await fetch("/missionControl");
+        const data = await response.json();
+
+        // Set data for Mission Control.
+        document.getElementById("timesCaught").textContent = `Times Caught: ${data.timesCaught}`;
+        document.getElementById("challenge").textContent = `${data.question}`;
+        document.getElementById("completeMissions").textContent = `Missions Completed: ${data.totalComplete}`;
+
+        // Display hint.
+        document.getElementById("hint").addEventListener("click", () => {
+            document.getElementById("help").textContent = `${data.hint}`;
+        });
+
+        // Display answer.
+        document.getElementById("revealAnswer").addEventListener("click", () => {
+            document.getElementById("help").textContent = `${data.answer}`;
+        });
+
+        // Reset users data and site.
+        document.getElementById("reset").addEventListener("click", async () => {
+            const response = await fetch("/reset", { method: "POST" });
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = "/";
+            }
+        });
+
+        // Display mission control.
+        const modal = new bootstrap.Modal(document.getElementById("missionControl"));
+            modal.show();
+    });
+</script>
+
+{% endblock %}

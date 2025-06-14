@@ -1,0 +1,445 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    You've Been Hacked!
+{% endblock %}
+
+{% block main %}
+
+<!-- If the site has been "hacked" and index is loaded when the user completes challenge 4. Load challenge 4 complete modal. -->
+    {% if eggComplete==True %}
+    <!-- challenge 4 complete modal. -->
+        <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="eggModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Header -->
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="eggModalLabel"><i class="bi bi-shield-lock"></i> Easter egg Complete!</h1>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+                    </div>
+                    <!-- Body -->
+                    <div class="modal-body">
+                        <p style="margin-bottom: 0em"><strong>Mission Complete:</strong> <i class="bi bi-egg"></i> - Find the Easter egg!</p>
+                        <p>
+                            You found the Easter egg! Checking the developer tools is one of the best places to look for hidden messages and links.
+                            This leads us back to Challenge 1. If you don't want it found, don't leave it lying around!
+                        </p>
+                        <!-- Close modal -->
+                        <button id="easterEggClose" class="btn btn-primary" id="closeWelcome" data-bs-dismiss="modal" type="close">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Script for loading challenge 4 complete modal. -->
+        <script>
+            const eggModal = new bootstrap.Modal('#eggModal');
+
+            // Listen for page to load and display welcome modal.
+            document.addEventListener('DOMContentLoaded', () => {
+                eggModal.show();
+            });
+
+            // Call to "/finalCheck" to check if the user has complete all challenges after closing easter egg challenge complete.
+            document.getElementById("easterEggClose").addEventListener("click", async () => {
+                const response = await fetch("/finalCheck");
+                const result = await response.json();
+
+                // If the return is "show message", display congratulation modal.
+                if (result.complete === true) {
+                    const modal = new bootstrap.Modal(document.getElementById("allMissionCompleteModal"));
+                    modal.show();
+                }
+            });
+        </script>
+    {% endif %}
+
+    <!-- Hero section -->
+    <div class="card text-bg-dark my-3">
+
+        <!-- Hero image -->
+        <img alt="Server Room" class="card-img bg-image" src="/static/server.jpg" style="height: 300px">
+        <div class="card-img-overlay">
+
+            <!-- Text and contact us button. -->
+            <div class="card-img-overlay text-center align-content-center">
+                <h1 class="display-5 fw-bold">Welcome to ACME</h1>
+                <p class="card-text">
+                    ACME is a leading company in delivering scalable and intelligent<br>
+                    solutions for management, logistics, and automation.
+                </p>
+                <a class="btn btn-primary" role="button" href="/hackedIndex#contact">Contact Us Now!</a>
+            </div>
+
+        <!-- Toilet paper and spray paint overlay. -->
+            <img alt="toilet paper over hero section" src="/static/toiletpaper.webp" style="height: 330px; position: absolute; top:-1px; left:-1px;">
+            <img alt="toilet paper over hero section" src="/static/toiletpaper.webp" style="height: 330px; position: absolute; top:-1px; right:-1px; -webkit-transform: scaleX(-1); transform: scaleX(-1);">
+            <div class="card-img-overlay text-center align-content-center">
+                <img alt="graffiti text over hero section" src="/static/graffiti.png" style="width: 500px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- What ACME offers cards. -->
+    <h2 class="text-start mt-5 ms-3">Check out some of our tools</h2>
+
+    <!-- Scrolable on small screens. -->
+    <div class="card-carousel-container overflow-auto">
+        <div class="d-flex flex-nonrap gap-3 px-3">
+
+            <!-- Card 1: Insights and analytics -->
+            <div class="card" style="max-width: 300px; min-width: 250px;">
+                <!-- Hacked tape overlayed over origianal card. -->
+                <img alt="Hacked warning tape" src="/static/hackedTape.png" style="position: absolute; object-fit: cover; width:100%; top:30px;">
+                <!-- Card image -->
+                <img alt="Dashboard Example" src="/static/card1.jpg" class="card-img-top img-fluid" style="max-height: 140px;">
+                <!-- Card text -->
+                <div class="card-body">
+                    <h5 class="card-title">Gain real-time Insights with analytics</h5>
+                    <p class="card-text">
+                        ACME delivers performance and productivity dashboards giving you all the data you need to make informed decisions.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 2: Logistics -->
+            <div class="card" style="max-width: 300px; min-width: 250px;">
+                <!-- Hacked tape overlayed over origianal card. -->
+                <img alt="Hacked warning tape" src="/static/hackedTape.png" style="position: absolute; object-fit: cover; width:100%; top:30px;">
+                <!-- Card image -->
+                <img alt="Robot Illustration" src="/static/card2.jpg" class="card-img-top img-fluid">
+                <!-- Card text -->
+                <div class="card-body">
+                    <h5 class="card-title">Logistics Automation</h5>
+                    <p class="card-text">
+                        Maximise your supply chain with ACME's automated logistics tools. From smart routing to inventory management.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 3: Cloud platforms -->
+            <div class="card" style="max-width: 300px; min-width: 250px;">
+                <!-- Hacked tape overlayed over origianal card. -->
+                <img alt="Hacked warning tape" src="/static/hackedTape.png" style="position: absolute; object-fit: cover; width:100%; top:30px;">
+                <!-- Card image -->
+                <img alt="Cloud Illustration" src="/static/card3.jpg" class="card-img-top img-fluid" style="max-height: 140px;">
+                <!-- Card text -->
+                <div class="card-body">
+                    <h5 class="card-title">Integrated Cloud Platforms</h5>
+                    <p class="card-text">
+                        Seamlessly integrate your tools and teams. ACME
+                        offers secure, cloud-native solutions that scale
+                        with your business.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 4: Resource management -->
+            <div class="card" style="max-width: 300px; min-width: 250px;">
+                <!-- Hacked tape overlayed over origianal card. -->
+                <img alt="Hacked warning tape" src="/static/hackedTape.png" style="position: absolute; object-fit: cover; width:100%; top:30px;">
+                <!-- Card image -->
+                <img alt="planning Illustration" src="/static/card4.jpg" class="card-img-top img-fluid" style="max-height: 140px">
+                <!-- Card text -->
+                <div class="card-body">
+                    <h5 class="card-title">Resource Management</h5>
+                    <p class="card-text">
+                        Reinvent workforce, operations, and planning
+                        with ACME's agile ERP suite - built for precision
+                        and flexibility.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About ACME -->
+     <div class="container ms-2 mt-5">
+        <h2>About Us</h2>
+        <p class="text">
+            ACME is a global market-leading supplier of scalable solutions, with ecperience
+            in integrated platforms for enterprise resource management, logistics automation,
+            and buisness intelligence. With over two decades of innovation, ACME serves a wide
+            cross-section of industries - from manufacturing to digital infrastructure - providing-fit
+            tools to fine-tune operations and unlock efficiency.
+        </p>
+
+        <!-- About ACME bullet points. -->
+        <ul class="list-unstyled">
+            <li><i class="bi bi-calendar-week me-2 lead"></i><strong>20+ years experience</strong></li>
+            <li><i class="bi bi-graph-up-arrow me-2"></i><strong>Trusted by Fortune 500 Companies</strong></li>
+            <li><i class="bi bi-robot me-2"></i><strong>Seamless Integration & Automation</strong></li>
+        </ul>
+     </div>
+
+     <!-- ACME customers -->
+    <div class="container">
+        <h2 class="text-center mt-5">Some of our Customers</h2>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+            <img alt="Google Logo" src="/static/logos/google.svg" class="img-thumbnail img-fluid border-0" style="max-width: 75px;">
+            <img alt="Amazon Logo" src="/static/logos/amazon.svg" class="img-thumbnail img-fluid border-0" style="max-width: 100px;">
+            <img alt="Coca-Cola Logo" src="/static/logos/coca-cola.svg" class="img-thumbnail img-fluid border-0" style="max-width: 100px;">
+            <img alt="Raspberry Pi Logo" src="/static/logos/raspberry-pi.svg" class="img-thumbnail img-fluid border-0" style="max-width: 80px;">
+            <img alt="Apple Logo" src="/static/logos/apple.svg" class="img-thumbnail img-fluid border-0" style="max-width: 75px;">
+            <img alt="Lego Logo" src="/static/logos/lego.svg" class="img-thumbnail img-fluid border-0" style="max-width: 75px;">
+            <img alt="Mcdonalds Logo" src="/static/logos/mcdonalds.svg" class="img-thumbnail img-fluid border-0" style="max-width: 75px;">
+            <img alt="Dell Logo" src="/static/logos/dell.svg" class="img-thumbnail img-fluid border-0" style="max-width: 75px;">
+        </div>
+    </div>
+
+    <!-- Contact us -->
+     <section class="container ms-2 mt-5 mb-5" id="contact">
+        <div class="row align-items-start">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+
+                <!-- Message section -->
+                <h2>Get in Touch</h2>
+                <p>
+                    We'd love to hear from you. If you have a features question, pricing question,
+                    or just want to talk about how ACME can help make your business thrive-our team is here to help.
+                </p>
+
+                <!-- Contact Address, Email, and Number. -->
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-geo-alt-fill"></i><strong> Address: </strong>123 Innovation Drive, Tech City, UK
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-envelope-at-fill"></i><strong> Email: </strong><a href="#">Contact@acme.com</a>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-telephone"></i><strong> Phone: </strong><a href="#">+1 234 567-890</a>
+                    </li>
+                </ul>
+
+                <!-- Map with ACME location. -->
+                <div class="d-none d-lg-block mt-4">
+                    <img src="/static/map.jpeg" class="img-fluid rounded-3" style="max-height: 200px;" alt="Map of where ACME is located">
+                </div>
+            </div>
+
+            <!-- Message box -->
+            <div class="col-lg-6 d-flex justify-content-center mt-3">
+                <div class="bg-white p-4 rounded shadow w-100" style="max-width: 500px;">
+                    <!-- On submit display my contact info -->
+                    <form onsubmit="fakeSubmit(event)">
+                        <!-- Name input -->
+                        <div class="mb-3">
+                            <input class="form-control" autocomplete="off" type="text" placeholder="Name" required>
+                        </div>
+                        <!-- Email input -->
+                        <div class="mb-3">
+                            <input class="form-control" autocomplete="off" type="email" placeholder="Your Email" required>
+                        </div>
+                        <!-- Message input -->
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="4" placeholder="Your Message" style="min-height: 220px;" required></textarea>
+                        </div>
+                        <!-- Submit message -->
+                        <button id="fakeMessage" type="submit" class="btn btn-primary w-100">Send Message</button>
+
+                        <!-- Display message with my Github account when user submits message. -->
+                        <div id="fake-submit-message" class="alert alert-warning mt-3 d-none">
+                            Sorry, Your message wasn't actually sent.<br>
+                            But feel free to message me here:<br>
+                            <!-- Github account -->
+                            <i class="bi bi-github"></i><a href="https://github.com/OliverStone01"> Github!</a><br>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+     </section>
+
+     <!-- Caught alert message -->
+     <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <div class="toast" id="caughtMessage" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">You Got Caught!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <p>You may not have used your actual information... But leaving any kind of message is evidence you were there!e</p>
+                <!-- Display users caught count. -->
+                Total Times Caught: <span id="caughtCount"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission 3 Complete modal. -->
+        <div class="modal fade" id="missionCompleteModal" tabindex="-1" aria-labelledby="missionCompleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-ui-checks"></i> Mission 3 Complete!</h5>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <p style="margin-bottom: 0.75em"><strong>Mission Complete:</strong> <i class="bi bi-paint-bucket"></i> - Deface the homepage as admin.</li></p>
+                        <p style="margin-bottom: 1em">
+                            Well done! You managed to complete the third mission. This isn't how real defacements work, but
+                            it's important to understand that if someone malicious gets access to your admin account, they can do
+                            anything to your site and take any data available to admin.
+                        </p>
+                        {% if session["egg"] != "complete" %}
+                            <p style="margin-bottom: 0.75em">Now, for the final flourish! See if you can find the hidden Easter egg!</p>
+                            <p style="margin-bottom: 0em">Good Luck!</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Close modal -->
+                    <div class="modal-footer justify-content-between">
+                        <button id="missionThreeClose" class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All missions complete modal. -->
+        <div class="modal fade" id="allMissionCompleteModal" tabindex="-1" aria-labelledby="allMissionCompleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-ui-checks"></i> You did it!</h5>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <p style="margin-bottom: 0.75em">Congratulations, you completed all missions and found the Easter egg!</p>
+                        <p style="margin-bottom: 1em">
+                            I hope enjoyed the challenges. Please reach out and share how many times you got caught during the challenge and what you enjoyed and also what you think could be improved!
+                        </p>
+                        <p>
+                            <!-- Github account -->
+                            <i class="bi bi-github"></i><a href="https://github.com/OliverStone01"> GitHub!</a><br>
+                        </p>
+                        <p style="margin-bottom: 0em">Thank you for trying ACME!</p>
+                    </div>
+
+                    <!-- Close modal -->
+                    <div class="modal-footer justify-content-between">
+                        <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+<!-- JavaScript -->
+{% block script %}
+    <script>
+        // Call to "/challengeThree" to check if the user has already completed the challenge.
+        document.addEventListener("DOMContentLoaded", async () => {
+            const response = await fetch("/challengeThree");
+            const result = await response.json();
+
+            // If the return is "show message", display congratulation modal.
+            if (result.showMessage === true) {
+                const modal = new bootstrap.Modal(document.getElementById("missionCompleteModal"));
+                modal.show();
+            }
+        });
+
+        // Call to "/finalCheck" to check if the user has complete all challenges after closing challenge 3 complete.
+        document.getElementById("missionThreeClose").addEventListener("click", async () => {
+            const response = await fetch("/finalCheck");
+            const result = await response.json();
+
+            // If the return is "show message", display congratulation modal.
+            if (result.complete === true) {
+                const modal = new bootstrap.Modal(document.getElementById("allMissionCompleteModal"));
+                modal.show();
+            }
+        });
+
+
+
+        // Listen for user to submit a fake message.
+        document.getElementById("fakeMessage").addEventListener("click", async () => {
+
+            // Call "/caught" function to update users caught count by 1 and request caught count back.
+            const response = await fetch("/caught");
+            const data = await response.json();
+
+            // set caught count data.
+            document.getElementById("caughtCount").textContent = `${data.caughtCount}`;
+
+            // Display alert message.
+            const toastEl = document.getElementById("caughtMessage");
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show()
+
+        });
+
+        // Listen for user to click on mission control.
+        document.getElementById("missionControlButton").addEventListener("click", async () => {
+
+            // Call "/missionControl" to get total missions complete, caught count, and current mission.
+            const response = await fetch("/missionControl");
+            const data = await response.json();
+
+            // Get data for mission control.
+            document.getElementById("timesCaught").textContent = `Times Caught: ${data.timesCaught}`;
+            document.getElementById("challenge").textContent = `${data.question}`;
+            document.getElementById("completeMissions").textContent = `Missions Complete: ${data.totalComplete}`;
+
+            // Display hint.
+            document.getElementById("hint").addEventListener("click", () => {
+                document.getElementById("help").textContent = `${data.hint}`;
+            });
+
+            // Display answer.
+            document.getElementById("revealAnswer").addEventListener("click", () => {
+                document.getElementById("help").textContent = `${data.answer}`;
+            });
+
+            // Reset users data and reload the site.
+            document.getElementById("reset").addEventListener("click", async () => {
+                // call "/reset" to clear session and request confirmation.
+                const response = await fetch("/reset", { method: "POST" });
+                const result = await response.json();
+
+                // if reset was successful, reset to index.
+                if (result.success) {
+                    window.location.href = "/";
+                }
+            });
+
+            // Display mission control.
+            const modal = new bootstrap.Modal(document.getElementById("missionControl"));
+                modal.show();
+        })
+    </script>
+{% endblock %}
+
+<!-- Footer section-->
+{% block footer %}
+    <section class="continer text-center text-dark pt-3 ms-4">
+        <h5><i class="bi bi-body-text"></i> ACME</h5>
+        <p style="font-size: 0.8rem;">
+            Empowering businesses through intelligent automation and scalable solutions.
+        </p>
+        <!-- Footer links -->
+        {% if session["user_id"]==1 %}
+        <ul class="list-unstyled">
+            <li><a class="text-dark" href="/">Website</a></li>
+            <li><a class="text-dark" href="/dashboard">Dashboard</a></li>
+            <li><a class="text-dark" href="/dashboard#edit">Edit Website</a></li>
+            <li><a class="text-dark" href="/dashboard#addCustomer">Add Customer</a></li>
+            <li><a class="text-dark" href="/logout">Logout</a></li>
+        </ul>
+        {% else %}
+        <ul class="list-unstyled">
+            <li><a class="text-dark" href="/">Home</a></li>
+            <li><a class="text-dark" href="/login">Employee Login</a></li>
+            <li><a class="text-dark" href="#contact">Contact Us</a></li>
+        </ul>
+        {% endif %}
+
+        <!-- Copyright -->
+        <div class="text-center mt-4">
+            <p style="font-size: 0.8rem;">&#169 <strong>ACME</strong> Solutions. All rights reserved.</p>
+        </div>
+    </section>
+{% endblock %}
